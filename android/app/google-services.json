@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "282251096910",
+    "project_id": "eco-living-app-b9db9",
+    "storage_bucket": "eco-living-app-b9db9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:282251096910:android:e1c3ed7fceea7fad3fe41f",
+        "android_client_info": {
+          "package_name": "com.example.eco_living_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnIk9IGzQJl3YRSLRwUnk72_tQCD2A-4k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
