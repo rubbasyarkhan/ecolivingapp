@@ -14,6 +14,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _name = TextEditingController();
   final TextEditingController _email = TextEditingController();
+  final TextEditingController _phone = TextEditingController();
   final TextEditingController _password = TextEditingController();
   final TextEditingController _confirmPassword = TextEditingController();
   bool _obscurePass = true;
@@ -27,13 +28,14 @@ class _SignupScreenState extends State<SignupScreen> {
       setState(() => _isLoading = true);
 
       try {
-        final user = await _authService.signUpWithEmail(
-          _email.text.trim(),
-          _password.text.trim(),
+        final user = await _authService.signUpWithEmailAndSaveProfile(
+          email: _email.text.trim(),
+          password: _password.text.trim(),
+          name: _name.text.trim(),
+          phone: _phone.text.trim(),
         );
 
         if (user != null) {
-          // ✅ After signup, go to Home and clear back stack
           Navigator.pushNamedAndRemoveUntil(
             context,
             AppRoutes.home,
@@ -41,13 +43,11 @@ class _SignupScreenState extends State<SignupScreen> {
           );
         }
       } on FirebaseAuthException catch (e) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(e.message ?? "Signup failed")));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.message ?? "Signup failed")));
       } catch (e) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(e.toString())));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.toString())));
       }
 
       setState(() => _isLoading = false);
@@ -89,6 +89,21 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                   validator: (value) =>
                       value == null || value.isEmpty ? "Enter your name" : null,
+                ),
+                const SizedBox(height: 16),
+
+                TextFormField(
+                  controller: _phone,
+                  keyboardType: TextInputType.phone,
+                  decoration: InputDecoration(
+                    labelText: "Phone Number",
+                    hintText: "Enter your phone number",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  validator: (value) =>
+                      value == null || value.isEmpty ? "Enter phone number" : null,
                 ),
                 const SizedBox(height: 16),
 
@@ -146,9 +161,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _obscureConfirm
-                            ? Icons.visibility_off
-                            : Icons.visibility,
+                        _obscureConfirm ? Icons.visibility_off : Icons.visibility,
                       ),
                       onPressed: () =>
                           setState(() => _obscureConfirm = !_obscureConfirm),
