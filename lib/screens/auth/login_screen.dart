@@ -12,21 +12,21 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _email = TextEditingController();
-  final TextEditingController _password = TextEditingController();
+  final TextEditingController _identifierController = TextEditingController(); // Username or Email
+  final TextEditingController _passwordController = TextEditingController();
   final _authService = AuthService();
 
   bool _isObscured = true;
   bool _isLoading = false;
 
-  void _login() async {
+  Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
 
       try {
-        final user = await _authService.loginWithEmail(
-          _email.text.trim(),
-          _password.text.trim(),
+        final user = await _authService.loginWithUsernameOrEmail(
+          identifier: _identifierController.text.trim(),
+          password: _passwordController.text.trim(),
         );
 
         if (user != null) {
@@ -37,17 +37,19 @@ class _LoginScreenState extends State<LoginScreen> {
           );
         }
       } on FirebaseAuthException catch (e) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(e.message ?? "Login failed")));
+        _showError(e.message ?? "Login failed");
       } catch (e) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(e.toString())));
+        _showError(e.toString());
       }
 
       setState(() => _isLoading = false);
     }
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
   }
 
   @override
@@ -75,9 +77,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 32),
 
-                  // Email
+                  // Username or Email
                   TextFormField(
-                    controller: _email,
+                    controller: _identifierController,
                     decoration: InputDecoration(
                       labelText: "Username or Email",
                       hintText: "Enter Username or Email",
@@ -85,15 +87,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    validator: (value) => value == null || value.isEmpty
-                        ? "Please enter email"
-                        : null,
+                    validator: (value) =>
+                        value == null || value.isEmpty ? "Please enter your username or email" : null,
                   ),
                   const SizedBox(height: 16),
 
                   // Password
                   TextFormField(
-                    controller: _password,
+                    controller: _passwordController,
                     obscureText: _isObscured,
                     decoration: InputDecoration(
                       labelText: "Password",
@@ -105,18 +106,15 @@ class _LoginScreenState extends State<LoginScreen> {
                         icon: Icon(
                           _isObscured ? Icons.visibility_off : Icons.visibility,
                         ),
-                        onPressed: () {
-                          setState(() => _isObscured = !_isObscured);
-                        },
+                        onPressed: () => setState(() => _isObscured = !_isObscured),
                       ),
                     ),
-                    validator: (value) => value == null || value.isEmpty
-                        ? "Please enter password"
-                        : null,
+                    validator: (value) =>
+                        value == null || value.isEmpty ? "Please enter your password" : null,
                   ),
                   const SizedBox(height: 24),
 
-                  // Divider + Dummy Google button (UI only)
+                  // Divider
                   Row(
                     children: const [
                       Expanded(child: Divider(thickness: 1)),
@@ -129,12 +127,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 16),
 
+                  // Dummy Google button
                   Center(
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey.shade300),
                         borderRadius: BorderRadius.circular(10),
@@ -144,15 +140,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         children: [
                           Image.asset('google_logo.png', width: 24, height: 24),
                           const SizedBox(width: 12),
-                          const Flexible(
-                            child: Text(
-                              "Login with Google (disabled)",
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.grey,
-                              ),
-                            ),
+                          const Text(
+                            "Login with Google (disabled)",
+                            style: TextStyle(fontSize: 16, color: Colors.grey),
                           ),
                         ],
                       ),
@@ -167,10 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       const Text("Don’t have an account?"),
                       TextButton(
                         onPressed: () {
-                          Navigator.pushReplacementNamed(
-                            context,
-                            AppRoutes.signup,
-                          );
+                          Navigator.pushReplacementNamed(context, AppRoutes.signup);
                         },
                         child: const Text("Register"),
                       ),
@@ -194,10 +181,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ? const CircularProgressIndicator(color: Colors.white)
                           : const Text(
                               "Login",
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.white,
-                              ),
+                              style: TextStyle(fontSize: 16, color: Colors.white),
                             ),
                     ),
                   ),

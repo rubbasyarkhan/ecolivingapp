@@ -23,7 +23,7 @@ class _SplashScreenState extends State<SplashScreen> {
         Navigator.pushReplacementNamed(context, AppRoutes.home);
       } else {
         // ❌ Not logged in → Go to Splash2 (second screen with login/signup)
-        Navigator.pushReplacementNamed(context, AppRoutes.splash2);
+        Navigator.pushReplacementNamed(context, AppRoutes.splashscreen2);
       }
     });
   }
