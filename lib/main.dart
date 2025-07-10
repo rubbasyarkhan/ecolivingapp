@@ -1,5 +1,7 @@
 import 'package:eco_living_app/screens/home/profile_screen.dart';
 import 'package:eco_living_app/screens/home/splahsecond_screen.dart';
+import 'package:eco_living_app/screens/recipes/personalized_recipes_screen.dart';
+import 'package:eco_living_app/screens/recipes/select_preferences_screen.dart';
 import 'package:flutter/foundation.dart'; // for kReleaseMode
 import 'package:flutter/material.dart';
 import 'package:device_preview/device_preview.dart';
@@ -19,9 +21,7 @@ import 'screens/home/home_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(
     DevicePreview(
@@ -54,6 +54,8 @@ class MyApp extends StatelessWidget {
         AppRoutes.signup: (context) => const SignupScreen(),
         AppRoutes.home: (context) => const HomeScreen(),
         AppRoutes.profile: (context) => const ProfileScreen(),
+        AppRoutes.selectPreferences: (_) => const SelectPreferencesScreen(),
+        AppRoutes.personalizedRecipes: (_) => const PersonalizedRecipesScreen(),
       },
     );
   }
