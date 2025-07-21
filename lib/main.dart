@@ -1,6 +1,8 @@
+import 'package:eco_living_app/screens/eco_travel/saved_tips_screen.dart';
+import 'package:eco_living_app/screens/eco_travel/travel_options_screen.dart';
+import 'package:eco_living_app/screens/eco_travel/travel_tips_screen.dart';
 import 'package:eco_living_app/screens/home/profile_screen.dart';
 import 'package:eco_living_app/screens/home/splahsecond_screen.dart';
-import 'package:eco_living_app/screens/recipe/recipe_detail_screen.dart';
 import 'package:eco_living_app/screens/recipe/recipe_list_screen.dart';
 import 'package:eco_living_app/screens/recipe/tag_selection_screen.dart';
 import 'package:flutter/foundation.dart'; // for kReleaseMode
@@ -22,9 +24,7 @@ import 'screens/home/home_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(
     DevicePreview(
@@ -59,6 +59,12 @@ class MyApp extends StatelessWidget {
         AppRoutes.profile: (context) => const ProfileScreen(),
         AppRoutes.tagSelection: (context) => const TagSelectionScreen(),
         AppRoutes.recipeList: (context) => const RecipeListScreen(),
+
+        
+        AppRoutes.travelTips: (context) => const  TravelTipsScreen(),
+        AppRoutes.travelOptions: (context) => const TravelOptionsScreen(),
+        AppRoutes.savedTips: (context) => const SavedTipsScreen(), // optional
+        // AppRoutes.devTools: (context) => const DevToolsScreen(),
 
       },
     );
