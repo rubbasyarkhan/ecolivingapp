@@ -16,4 +16,10 @@
 
   // Energy Tips
   static const String energyTips = '/energy-tips';
+  
+  
+  static const String ecoproducts = '/eco-products';
+
+
+  // static const String ecoProducts = '/devtools';
   }
