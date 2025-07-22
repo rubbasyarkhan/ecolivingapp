@@ -13,4 +13,7 @@
   static const String travelTips = '/eco-travel/tips';
   static const String travelOptions = '/eco-travel/options';
   static const String savedTips = '/eco-travel/saved';
+
+  // Energy Tips
+  static const String energyTips = '/energy-tips';
   }
