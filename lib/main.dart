@@ -1,3 +1,5 @@
+// import 'package:eco_living_app/screens/dev/seed_energy_tips.dart';
+import 'package:eco_living_app/screens/eco_tips/energy_tips_screen.dart';
 import 'package:eco_living_app/screens/eco_travel/saved_tips_screen.dart';
 import 'package:eco_living_app/screens/eco_travel/travel_options_screen.dart';
 import 'package:eco_living_app/screens/eco_travel/travel_tips_screen.dart';
@@ -25,7 +27,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
+  // await seedEnergyTips();
   runApp(
     DevicePreview(
       enabled: !kReleaseMode, // Only enabled in debug mode
@@ -60,12 +62,11 @@ class MyApp extends StatelessWidget {
         AppRoutes.tagSelection: (context) => const TagSelectionScreen(),
         AppRoutes.recipeList: (context) => const RecipeListScreen(),
 
-        
-        AppRoutes.travelTips: (context) => const  TravelTipsScreen(),
+        AppRoutes.travelTips: (context) => const TravelTipsScreen(),
         AppRoutes.travelOptions: (context) => const TravelOptionsScreen(),
         AppRoutes.savedTips: (context) => const SavedTipsScreen(), // optional
         // AppRoutes.devTools: (context) => const DevToolsScreen(),
-
+        AppRoutes.energyTips: (context) => const EnergyTipsScreen(),
       },
     );
   }
