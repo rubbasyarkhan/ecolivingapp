@@ -20,6 +20,10 @@
   
   static const String ecoproducts = '/eco-products';
 
+  static const String carbonInput = '/carbon-input';
+
+  static const String carbondashboard = '/carbon-dashboard';
+
 
   // static const String ecoProducts = '/devtools';
   }
