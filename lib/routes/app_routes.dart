@@ -20,9 +20,9 @@
   
   static const String ecoproducts = '/eco-products';
 
-  static const String carbonInput = '/carbon-input';
-
-  static const String carbondashboard = '/carbon-dashboard';
+  static const String Wastetipsscreen = '/waste/tips';
+  static const String Wastetrackerdashboard = '/waste/dashboard';
+  static const String Wastetrackerinput = '/waste/input';
 
 
   // static const String ecoProducts = '/devtools';

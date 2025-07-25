@@ -1,5 +1,3 @@
-import 'package:eco_living_app/screens/carbon_tracker/carbon_dashboard_screen.dart';
-import 'package:eco_living_app/screens/carbon_tracker/carbon_input_screen.dart';
 import 'package:eco_living_app/screens/eco_products/eco_product_list_screen.dart';
 import 'package:eco_living_app/screens/eco_tips/energy_tips_screen.dart';
 import 'package:eco_living_app/screens/eco_travel/saved_tips_screen.dart';
@@ -9,6 +7,9 @@ import 'package:eco_living_app/screens/home/profile_screen.dart';
 import 'package:eco_living_app/screens/home/splahsecond_screen.dart';
 import 'package:eco_living_app/screens/recipe/recipe_list_screen.dart';
 import 'package:eco_living_app/screens/recipe/tag_selection_screen.dart';
+import 'package:eco_living_app/screens/waste_tracker/waste_tips_screen.dart';
+import 'package:eco_living_app/screens/waste_tracker/waste_tracker_dashboard_screen.dart';
+import 'package:eco_living_app/screens/waste_tracker/waste_tracker_input_screen.dart';
 import 'package:flutter/foundation.dart'; // for kDebugMode and kReleaseMode
 import 'package:flutter/material.dart';
 import 'package:device_preview/device_preview.dart';
@@ -73,8 +74,9 @@ class MyApp extends StatelessWidget {
         AppRoutes.savedTips: (context) => const SavedTipsScreen(),
         AppRoutes.energyTips: (context) => const EnergyTipsScreen(),
         AppRoutes.ecoproducts: (context) => EcoProductListScreen(),
-        AppRoutes.carbonInput: (context) =>  CarbonInputScreen(),
-        AppRoutes.carbondashboard: (context) =>  CarbonDashboardScreen(),
+        AppRoutes.Wastetipsscreen: (context) => WasteTipsScreen(),
+        AppRoutes.Wastetrackerdashboard: (context) => WasteTrackerDashboardScreen(),
+        AppRoutes.Wastetrackerinput: (context) => WasteTrackerInputScreen(),
       },
     );
   }
