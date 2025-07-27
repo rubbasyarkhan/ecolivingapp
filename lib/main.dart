@@ -1,3 +1,4 @@
+import 'package:eco_living_app/screens/community/community_list_screen.dart';
 import 'package:eco_living_app/screens/eco_products/eco_product_list_screen.dart';
 import 'package:eco_living_app/screens/eco_tips/energy_tips_screen.dart';
 import 'package:eco_living_app/screens/eco_travel/saved_tips_screen.dart';
@@ -13,7 +14,7 @@ import 'package:eco_living_app/screens/recipe/tag_selection_screen.dart';
 import 'package:eco_living_app/screens/waste_tracker/waste_tips_screen.dart';
 import 'package:eco_living_app/screens/waste_tracker/waste_tracker_dashboard_screen.dart';
 import 'package:eco_living_app/screens/waste_tracker/waste_tracker_input_screen.dart';
-import 'package:flutter/foundation.dart'; 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -26,7 +27,7 @@ import 'screens/auth/signup_screen.dart';
 import 'screens/home/home_screen.dart';
 
 // ✅ Import your seeder
-// import 'package:eco_living_app/screens/dev/upload_educational_content.dart'; // adjust the path as needed
+// import 'package:eco_living_app/screens/dev/community_seed.dart'; // adjust the path as needed
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,10 +35,7 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // ✅ Run Seeder only in debug mode
-  // if (kDebugMode) {
-  //   final seeder = EducationalContentSeeder();
-  //   await seeder.seedDatabase();
-  // }
+  // seedCommunities();
 
   runApp(
     DevicePreview(
@@ -78,12 +76,16 @@ class MyApp extends StatelessWidget {
         AppRoutes.energyTips: (context) => const EnergyTipsScreen(),
         AppRoutes.ecoproducts: (context) => EcoProductListScreen(),
         AppRoutes.Wastetipsscreen: (context) => WasteTipsScreen(),
-        AppRoutes.Wastetrackerdashboard: (context) => WasteTrackerDashboardScreen(),
+        AppRoutes.Wastetrackerdashboard: (context) =>
+            WasteTrackerDashboardScreen(),
         AppRoutes.Wastetrackerinput: (context) => WasteTrackerInputScreen(),
-        
-        AppRoutes.educationalContentList: (context) => EducationalContentListScreen (),
+
+        AppRoutes.educationalContentList: (context) =>
+            EducationalContentListScreen(),
         // AppRoutes.educationalContentCategory: (context) => EducationalContentCategoryScreen (),
         // AppRoutes.educationalContentDetail: (context) => EducationalContentDetailScreen (),
-      },);
+        AppRoutes.communityList: (context) => const CommunityListScreen(),
+      },
+    );
   }
 }
