@@ -51,28 +51,49 @@ class _CommunityListScreenState extends State<CommunityListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Communities')),
-      body: ListView.builder(
-        itemCount: _communities.length,
-        itemBuilder: (context, index) {
-          final community = _communities[index];
-          return GestureDetector(
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(
-                builder: (_) => CommunityFeedScreen(
-                  community: community,
-                  userSubscribed: _subscriptions.contains(community.id),
-                ),
-              ));
-            },
-            child: CommunityCard(
-              community: community,
-              isSubscribed: _subscriptions.contains(community.id),
-              onSubscribeToggle: () => _toggleSubscription(community.id),
-            ),
-          );
-        },
+      appBar: AppBar(
+        backgroundColor: Colors.teal[700],
+        title: const Text(
+          'Communities',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0.5,
+          ),
+        ),
+        elevation: 0,
       ),
+      body: _communities.isEmpty
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : ListView.builder(
+              itemCount: _communities.length,
+              itemBuilder: (context, index) {
+                final community = _communities[index];
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => CommunityFeedScreen(
+                          community: community,
+                          userSubscribed: _subscriptions.contains(community.id),
+                        ),
+                      ),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    child: CommunityCard(
+                      community: community,
+                      isSubscribed: _subscriptions.contains(community.id),
+                      onSubscribeToggle: () => _toggleSubscription(community.id),
+                    ),
+                  ),
+                );
+              },
+            ),
     );
   }
 }

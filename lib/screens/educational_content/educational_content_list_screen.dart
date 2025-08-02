@@ -16,6 +16,17 @@ class _EducationalContentListScreenState
   Map<String, List<EducationalContent>> _groupedContent = {};
   bool _isLoading = true;
 
+  final List<Color> _cardColors = [
+    Colors.teal.shade300,
+    Colors.indigo.shade400,
+    Colors.orange.shade300,
+    Colors.pink.shade300,
+    Colors.deepPurple.shade300,
+    Colors.green.shade400,
+    Colors.cyan.shade400,
+    Colors.amber.shade400,
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -24,8 +35,9 @@ class _EducationalContentListScreenState
 
   Future<void> _loadGroupedContent() async {
     try {
-      final snapshot =
-          await FirebaseFirestore.instance.collection('educational_contents').get();
+      final snapshot = await FirebaseFirestore.instance
+          .collection('educational_contents')
+          .get();
 
       final contents = snapshot.docs
           .map((doc) => EducationalContent.fromJson(doc.data(), doc.id))
@@ -38,7 +50,7 @@ class _EducationalContentListScreenState
         grouped.putIfAbsent(category, () => []).add(content);
       }
 
-      if (!mounted) return; // ✅ Prevent setState if widget is disposed
+      if (!mounted) return;
 
       setState(() {
         _groupedContent = grouped;
@@ -53,6 +65,8 @@ class _EducationalContentListScreenState
 
   @override
   Widget build(BuildContext context) {
+    final categories = _groupedContent.entries.toList();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Educational Content"),
@@ -60,24 +74,23 @@ class _EducationalContentListScreenState
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : _groupedContent.isEmpty
+          : categories.isEmpty
               ? const Center(child: Text("No educational content found."))
-              : ListView(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  children: _groupedContent.entries.map((entry) {
-                    return Card(
-                      margin:
-                          const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      elevation: 2,
-                      child: ListTile(
-                        leading: Icon(Icons.folder_special_rounded,
-                            color: Colors.green.shade700),
-                        title: Text(entry.key.toUpperCase(),
-                            style:
-                                const TextStyle(fontWeight: FontWeight.bold)),
-                        subtitle: Text("${entry.value.length} item(s)"),
-                        trailing:
-                            const Icon(Icons.arrow_forward_ios, size: 16),
+              : Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: GridView.builder(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
+                      childAspectRatio: 1 / 2, // Increased card height (taller cards)
+                    ),
+                    itemCount: categories.length,
+                    itemBuilder: (context, index) {
+                      final entry = categories[index];
+                      final color = _cardColors[index % _cardColors.length];
+
+                      return GestureDetector(
                         onTap: () {
                           Navigator.push(
                             context,
@@ -89,9 +102,46 @@ class _EducationalContentListScreenState
                             ),
                           );
                         },
-                      ),
-                    );
-                  }).toList(),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: color,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: color.withOpacity(0.4),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Icon(Icons.folder_special_rounded,
+                                  color: Colors.white, size: 28),
+                              Text(
+                                entry.key.toUpperCase(),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              Text(
+                                "${entry.value.length} item(s)",
+                                style: const TextStyle(
+                                  color: Colors.white70,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
     );
   }

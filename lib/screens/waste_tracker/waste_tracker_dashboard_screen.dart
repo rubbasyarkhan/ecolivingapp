@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:eco_living_app/constants/colors.dart';
 import 'package:eco_living_app/models/waste_log_model.dart';
 import 'package:eco_living_app/services/waste_tracker_service.dart';
 import 'package:eco_living_app/screens/widgets/waste_log_card.dart';
@@ -7,10 +8,12 @@ import 'package:eco_living_app/screens/widgets/waste_stat_chart.dart';
 
 class WasteTrackerDashboardScreen extends StatefulWidget {
   @override
-  _WasteTrackerDashboardScreenState createState() => _WasteTrackerDashboardScreenState();
+  _WasteTrackerDashboardScreenState createState() =>
+      _WasteTrackerDashboardScreenState();
 }
 
-class _WasteTrackerDashboardScreenState extends State<WasteTrackerDashboardScreen> {
+class _WasteTrackerDashboardScreenState
+    extends State<WasteTrackerDashboardScreen> {
   List<WasteLog> _allLogs = [];
   List<WasteLog> _todayLogs = [];
   bool _loading = true;
@@ -69,8 +72,19 @@ class _WasteTrackerDashboardScreenState extends State<WasteTrackerDashboardScree
     final todayTotal = getTotalTodayItems();
 
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: const Text('Waste Reduction Dashboard'),
+        backgroundColor: AppColors.primary,
+        centerTitle: true,
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.pushNamed(context, '/waste/input');
+        },
+        backgroundColor: AppColors.highlight,
+        icon: const Icon(Icons.add),
+        label: const Text('Log Waste Effort'),
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
@@ -94,7 +108,10 @@ class _WasteTrackerDashboardScreenState extends State<WasteTrackerDashboardScree
                             child: Text(
                               "No waste reduction logs yet.\nStart tracking your efforts today!",
                               textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 16, color: Colors.black54),
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.w500),
                             ),
                           ),
                         )
@@ -104,43 +121,66 @@ class _WasteTrackerDashboardScreenState extends State<WasteTrackerDashboardScree
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
+                              Text(
                                 "Your Waste Reduction Stats",
-                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.text,
+                                ),
                               ),
                               const SizedBox(height: 8),
 
-                              /// Chart showing waste trends
+                              /// Chart
                               WasteStatChart(logs: _allLogs),
                               const SizedBox(height: 16),
 
                               /// Motivational Card
                               Card(
-                                color: Colors.teal.shade50,
-                                elevation: 2,
+                                color: AppColors.card,
+                                elevation: 3,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
                                 margin: const EdgeInsets.only(bottom: 16),
                                 child: ListTile(
-                                  leading: const Icon(Icons.emoji_emotions, color: Colors.teal),
-                                  title: Text(getMotivationalMessage(todayTotal)),
-                                  subtitle: Text("You reduced $todayTotal item(s) today."),
+                                  leading: Icon(Icons.emoji_emotions,
+                                      color: AppColors.primary, size: 32),
+                                  title: Text(
+                                    getMotivationalMessage(todayTotal),
+                                    style: TextStyle(
+                                      color: AppColors.text,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    "You reduced $todayTotal item(s) today.",
+                                    style: TextStyle(color: AppColors.text.withOpacity(0.7)),
+                                  ),
                                 ),
                               ),
 
-                              /// Today's Logs
                               if (_todayLogs.isNotEmpty) ...[
-                                const Text(
+                                Text(
                                   "Today's Waste Reduction Logs",
-                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.text,
+                                  ),
                                 ),
                                 const SizedBox(height: 8),
                                 ..._todayLogs.map((log) => WasteLogCard(log: log)).toList(),
                                 const SizedBox(height: 24),
                               ],
 
-                              /// All Logs
-                              const Text(
+                              Text(
                                 "All Your Waste Logs",
-                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.text,
+                                ),
                               ),
                               const SizedBox(height: 8),
                               ..._allLogs.map((log) => WasteLogCard(log: log)).toList(),

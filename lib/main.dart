@@ -1,3 +1,5 @@
+import 'package:eco_living_app/screens/carbon_tracker/carbon_dashboard_screen.dart';
+import 'package:eco_living_app/screens/carbon_tracker/carbon_input_screen.dart';
 import 'package:eco_living_app/screens/community/community_list_screen.dart';
 import 'package:eco_living_app/screens/eco_products/eco_product_list_screen.dart';
 import 'package:eco_living_app/screens/eco_tips/energy_tips_screen.dart';
@@ -85,6 +87,11 @@ class MyApp extends StatelessWidget {
         // AppRoutes.educationalContentCategory: (context) => EducationalContentCategoryScreen (),
         // AppRoutes.educationalContentDetail: (context) => EducationalContentDetailScreen (),
         AppRoutes.communityList: (context) => const CommunityListScreen(),
+
+
+
+        AppRoutes.carbonInput: (context) =>  CarbonInputScreen(),
+        AppRoutes.carbondashboard: (context) =>  CarbonDashboardScreen(),
       },
     );
   }

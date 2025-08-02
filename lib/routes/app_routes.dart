@@ -31,5 +31,11 @@ class AppRoutes {
   static const String communityList = '/community/list';
   static const String communityFeed = '/community/feed';
   static const String createPost = '/community/create-post';
+
+
+
+  static const String carbonInput = '/carbon-input';
+
+  static const String carbondashboard = '/carbon-dashboard';
   // static const String edcontent = '/devtools';
 }

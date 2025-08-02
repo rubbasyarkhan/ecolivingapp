@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:eco_living_app/constants/colors.dart';
+
 
 class SavedTipsScreen extends StatelessWidget {
   const SavedTipsScreen({super.key});
@@ -11,13 +13,22 @@ class SavedTipsScreen extends StatelessWidget {
 
     if (userId == null) {
       return const Scaffold(
-        body: Center(child: Text('You need to log in to view saved tips.')),
+        backgroundColor: AppColors.background,
+        body: Center(
+          child: Text(
+            '🔒 You need to log in to view saved tips.',
+            style: TextStyle(color: AppColors.text),
+          ),
+        ),
       );
     }
 
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: const Text('Saved Eco Tips'),
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
         centerTitle: true,
       ),
       body: StreamBuilder<QuerySnapshot>(
@@ -28,17 +39,27 @@ class SavedTipsScreen extends StatelessWidget {
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator(color: AppColors.primary));
           }
 
           if (snapshot.hasError) {
-            return const Center(child: Text('Something went wrong!'));
+            return const Center(
+              child: Text(
+                '❌ Something went wrong!',
+                style: TextStyle(color: AppColors.text),
+              ),
+            );
           }
 
           final docs = snapshot.data?.docs ?? [];
 
           if (docs.isEmpty) {
-            return const Center(child: Text("No saved tips found."));
+            return const Center(
+              child: Text(
+                "📭 No saved tips found.",
+                style: TextStyle(color: AppColors.text),
+              ),
+            );
           }
 
           return ListView.separated(
@@ -53,14 +74,25 @@ class SavedTipsScreen extends StatelessWidget {
               }
 
               return Card(
-                elevation: 2,
+                color: AppColors.card,
+                elevation: 3,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(14),
                 ),
                 child: ListTile(
-                  leading: const Icon(Icons.eco, color: Colors.green),
-                  title: Text(data['title']),
-                  subtitle: Text(data['description'] ?? ''),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  leading: const Icon(Icons.eco, color: AppColors.primary),
+                  title: Text(
+                    data['title'],
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.text,
+                    ),
+                  ),
+                  subtitle: Text(
+                    data['description'] ?? '',
+                    style: const TextStyle(color: AppColors.text),
+                  ),
                 ),
               );
             },
@@ -69,4 +101,4 @@ class SavedTipsScreen extends StatelessWidget {
       ),
     );
   }
-} 
+}

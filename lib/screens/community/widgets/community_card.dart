@@ -18,15 +18,40 @@ class CommunityCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 3,
+      shadowColor: Colors.black.withOpacity(0.1),
       child: ListTile(
-        title: Text(community.name),
-        subtitle: Text(community.description),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        title: Text(
+          community.name,
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+        ),
+        subtitle: Text(
+          community.description,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            color: Colors.grey[600],
+            fontSize: 14,
+          ),
+        ),
         trailing: ElevatedButton(
           onPressed: onSubscribeToggle,
-          child: Text(isSubscribed ? 'Unsubscribe' : 'Subscribe'),
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 16), backgroundColor: isSubscribed ? const Color.fromARGB(255, 235, 235, 235) : Colors.green.shade400,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          child: Text(
+            isSubscribed ? 'Unsubscribe' : 'Subscribe',
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
         ),
       ),
     );
   }
 }
-  

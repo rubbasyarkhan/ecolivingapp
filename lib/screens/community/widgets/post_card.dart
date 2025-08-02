@@ -24,36 +24,46 @@ class PostCard extends StatelessWidget {
     }
 
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      elevation: 3,
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      elevation: 6, // Slightly larger elevation for a better shadow effect
+      shadowColor: Colors.black.withOpacity(0.2), // Soft shadow
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Title
             Text(
               post.title,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.teal,
+              ),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 8),
 
             // Description
-            Text(post.description),
-            const SizedBox(height: 10),
+            Text(
+              post.description,
+              style: const TextStyle(fontSize: 16, color: Colors.black87),
+              maxLines: 3, // Limiting the description lines
+              overflow: TextOverflow.ellipsis, // Add ellipsis for overflow text
+            ),
+            const SizedBox(height: 12),
 
             // Images (horizontal scroll)
             if (decodedImages.isNotEmpty)
               SizedBox(
-                height: 200,
+                height: 220,
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemCount: decodedImages.length,
                   separatorBuilder: (_, __) => const SizedBox(width: 10),
                   itemBuilder: (context, index) {
                     return ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(12),
                       child: Image.memory(
                         decodedImages[index],
                         width: 250,
@@ -67,12 +77,15 @@ class PostCard extends StatelessWidget {
                 ),
               ),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 12),
 
             // Created At
             Text(
               'Posted on ${post.createdAt != null ? DateFormat.yMMMMd().format(post.createdAt!) : 'Unknown'}',
-              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey[600],
+              ),
             ),
           ],
         ),

@@ -58,32 +58,66 @@ class _CommunityFeedScreenState extends State<CommunityFeedScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.community.name),
+        backgroundColor:Colors.teal[700], // Changed AppBar color
+        title: Text(
+          widget.community.name,
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+        ),
         actions: [
           if (subscribed)
             IconButton(
               icon: const Icon(Icons.add),
               onPressed: _goToCreatePost,
               tooltip: 'Create Post',
+              color: Colors.white,
             ),
         ],
       ),
       body: subscribed
           ? (_posts.isEmpty
-              ? const Center(child: Text("No posts yet. Be the first!"))
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.create_rounded,
+                          size: 50,
+                          color: Colors.deepPurple,
+                        ),
+                        SizedBox(height: 20),
+                        Text(
+                          "No posts yet. Be the first to create one!",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.deepPurple,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
               : ListView.builder(
+                  padding: const EdgeInsets.all(8.0),
                   itemCount: _posts.length,
                   itemBuilder: (context, index) {
-                    return PostCard(post: _posts[index]);
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: PostCard(post: _posts[index]),
+                    );
                   },
                 ))
-          : const Center(
+          : Center(
               child: Padding(
-                padding: EdgeInsets.all(20.0),
+                padding: const EdgeInsets.all(20.0),
                 child: Text(
                   "Subscribe to view posts in this community.",
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16),
+                  style: TextStyle(fontSize: 16, color: Colors.grey[700]),
                 ),
               ),
             ),

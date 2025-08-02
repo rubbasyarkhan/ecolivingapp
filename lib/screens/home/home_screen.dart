@@ -1,8 +1,10 @@
-import 'dart:convert';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:eco_living_app/screens/widgets/app_drawer.dart';
+import 'package:eco_living_app/screens/widgets/carbon_summary_card.dart';
 import 'package:flutter/material.dart';
-import '../../routes/app_routes.dart';
+import 'package:eco_living_app/services/waste_tracker_service.dart';
+import 'package:eco_living_app/models/waste_log_model.dart';
+import 'package:eco_living_app/screens/widgets/waste_stat_chart.dart';
+// import 'package:eco_living_app/screens/widgets/carbon_summary_chart.dart'; // assuming this exists
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -12,166 +14,107 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String? fullName;
-  String? email;
-  String? base64Image;
+  List<WasteLog> _allLogs = [];
+  List<WasteLog> _todayLogs = [];
+  bool _loading = true;
+  String? _error;
 
   @override
   void initState() {
     super.initState();
-    _loadUserData();
+    _loadLogs();
   }
 
-  Future<void> _loadUserData() async {
+  Future<void> _loadLogs() async {
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+
     try {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        final uid = user.uid;
-        final doc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
-        if (doc.exists) {
-          final data = doc.data()!;
-          setState(() {
-            fullName = data['name'] ?? 'Unknown';
-            email = data['email'] ?? user.email ?? 'No Email';
-            base64Image = data['image'];
-          });
-        }
-      }
+      final logs = await WasteTrackerService().fetchWasteLogs();
+      final now = DateTime.now();
+
+      final todayLogs = logs.where((log) =>
+          log.date.year == now.year &&
+          log.date.month == now.month &&
+          log.date.day == now.day).toList();
+
+      if (!mounted) return;
+
+      setState(() {
+        _allLogs = logs;
+        _todayLogs = todayLogs;
+        _loading = false;
+      });
     } catch (e) {
-      print("Error fetching user data: $e");
+      if (!mounted) return;
+      setState(() {
+        _error = "Error loading logs: ${e.toString()}";
+        _loading = false;
+      });
     }
+  }
+
+  int getTotalTodayItems() {
+    return _todayLogs.fold(0, (sum, log) => sum + log.quantity);
+  }
+
+  String getMotivationalMessage(int totalToday) {
+    if (totalToday == 0) return "Let's start making an impact today!";
+    if (totalToday < 5) return "Good job! Every little effort counts. 🌱";
+    if (totalToday < 10) return "You're making real progress! 🌿";
+    return "Amazing! You're a true waste reduction hero! 💚";
   }
 
   @override
   Widget build(BuildContext context) {
-    final nameInitial = (fullName != null && fullName!.isNotEmpty)
-        ? fullName![0].toUpperCase()
-        : '?';
+    final todayTotal = getTotalTodayItems();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Eco Living",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: Colors.green.shade700,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: GestureDetector(
-              onTap: () => _showProfileModal(context),
-              child: base64Image != null && base64Image!.isNotEmpty
-                  ? CircleAvatar(
-                      radius: 20,
-                      backgroundImage: MemoryImage(base64Decode(base64Image!)),
-                    )
-                  : CircleAvatar(
-                      radius: 20,
-                      backgroundColor: Colors.teal,
-                      child: Text(
-                        nameInitial,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: Colors.white,
+        title: const Text("Eco Living Dashboard"),
+      ),
+      drawer: const AppDrawer(username: '',),
+        
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : _error != null
+              ? Center(child: Text(_error!))
+              : SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      /// Waste Reduction Section
+                      const Text(
+                        "Waste Reduction Stats",
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 8),
+                      WasteStatChart(logs: _allLogs),
+                      const SizedBox(height: 8),
+                      Card(
+                        color: Colors.teal.shade50,
+                        elevation: 2,
+                        child: ListTile(
+                          leading: const Icon(Icons.emoji_emotions, color: Colors.teal),
+                          title: Text(getMotivationalMessage(todayTotal)),
+                          subtitle: Text("You reduced $todayTotal item(s) today."),
                         ),
                       ),
-                    ),
-            ),
-          ),
-        ],
-      ),
-      body: const Center(
-        child: Text(
-          "Welcome to the Home Screen 🌿",
-          style: TextStyle(fontSize: 18),
-        ),
-      ),
-    );
-  }
+                      const SizedBox(height: 24),
 
-  void _showProfileModal(BuildContext context) {
-    final nameInitial = (fullName != null && fullName!.isNotEmpty)
-        ? fullName![0].toUpperCase()
-        : '?';
-
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
-      ),
-      backgroundColor: Colors.transparent,
-      builder: (BuildContext context) {
-        return Container(
-          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              base64Image != null && base64Image!.isNotEmpty
-                  ? CircleAvatar(
-                      radius: 40,
-                      backgroundImage: MemoryImage(base64Decode(base64Image!)),
-                    )
-                  : CircleAvatar(
-                      radius: 40,
-                      backgroundColor: Colors.teal,
-                      child: Text(
-                        nameInitial,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
+                      /// Carbon Summary Section
+                      const Text(
+                        "Carbon Footprint Summary",
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                       ),
-                    ),
-              const SizedBox(height: 10),
-              Text(
-                fullName ?? "Loading...",
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              Text(
-                email ?? "",
-                style: const TextStyle(color: Colors.grey),
-              ),
-              const Divider(height: 30, thickness: 1.0),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.person),
-                title: const Text("Profile"),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.pushNamed(context, AppRoutes.profile);
-                },
-              ),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.settings),
-                title: const Text("Settings"),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.logout),
-                title: const Text("Logout"),
-                onTap: () async {
-                  Navigator.pop(context);
-                  await FirebaseAuth.instance.signOut();
-                  if (mounted) {
-                    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
-                  }
-                },
-              ),
-            ],
-          ),
-        );
-      },
+                      const SizedBox(height: 8),
+                      const CarbonSummaryCard(), // Replace with your actual chart widget
+                    ],
+                  ),
+                ),
     );
   }
 }

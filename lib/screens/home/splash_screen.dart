@@ -36,7 +36,7 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image(image: AssetImage('logo.png'), width: 160, height: 160),
+            Image(image: AssetImage('splash-screenlogo.png'), width: 160, height: 160),
             SizedBox(height: 20),
             CircularProgressIndicator(color: Colors.green),
           ],

@@ -19,7 +19,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final _name = TextEditingController();
   final _phone = TextEditingController();
   final _bio = TextEditingController();
-  final _password = TextEditingController();
+  // final _password = TextEditingController();
 
   final _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
@@ -94,9 +94,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
           'image': _base64Image,
         }, SetOptions(merge: true));
 
-        if (_password.text.isNotEmpty) {
-          await _auth.currentUser!.updatePassword(_password.text.trim());
-        }
+        // if (_password.text.isNotEmpty) {
+        //   await _auth.currentUser!.updatePassword(_password.text.trim());
+        // }
 
         if (!mounted) return;
         showDialog(
@@ -126,7 +126,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _name.dispose();
     _phone.dispose();
     _bio.dispose();
-    _password.dispose();
+    // _password.dispose();
     super.dispose();
   }
 
@@ -202,28 +202,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       decoration: const InputDecoration(labelText: "Bio"),
                       maxLines: 2,
                     ),
-                    const SizedBox(height: 10),
-                    TextFormField(
-                      controller: _password,
-                      obscureText: true,
-                      decoration: const InputDecoration(labelText: "New Password (optional)"),
-                      validator: (value) {
-                        if (value != null && value.isNotEmpty && value.length < 6) {
-                          return "Minimum 6 characters";
-                        }
-                        return null;
-                      },
-                    ),
+                    // const SizedBox(height: 10),
+                    // TextFormField(
+                    //   controller: _password,
+                    //   obscureText: true,
+                    //   decoration: const InputDecoration(labelText: "New Password (optional)"),
+                    //   validator: (value) {
+                    //     if (value != null && value.isNotEmpty && value.length < 6) {
+                    //       return "Minimum 6 characters";
+                    //     }
+                    //     return null;
+                    //   },
+                    // ),
+                    
                     const SizedBox(height: 24),
                     ElevatedButton(
                       onPressed: updateProfile,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.black,
                         padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
                       child: const Text(
                         "Update Profile",
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ],
